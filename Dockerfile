@@ -8,6 +8,8 @@ RUN npm run build
 
 # ---------- Build do backend PHP ----------
 FROM php:8.3-cli
+
+# Instala dependências do sistema e extensões PHP necessárias
 RUN apt-get update && apt-get install -y \
     unzip git curl libpq-dev libzip-dev \
     && docker-php-ext-install pdo pdo_mysql zip \
@@ -16,12 +18,18 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /var/www/html
 
+# Copia o Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copia o projeto
 COPY . .
+
+# Copia os assets compilados do frontend
 COPY --from=build /app/public/build ./public/build
 
+# Ajustes do Laravel
 RUN git config --global --add safe.directory /var/www/html \
-    && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-mongodb \
+    && composer install --no-dev --optimize-autoloader \
     && php artisan storage:link \
     && php artisan config:cache \
     && php artisan route:cache \
@@ -32,5 +40,5 @@ RUN git config --global --add safe.directory /var/www/html \
 # Exposição da porta dinâmica do Render
 EXPOSE $PORT
 
-# Laravel serve usando porta do Render
+# Comando para rodar Laravel usando a porta do Render
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
