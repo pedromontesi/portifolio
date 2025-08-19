@@ -15,9 +15,10 @@
                     </li>
                 @endforeach
             </ul>
-            <p class="underline decoration-2 underline-offset-2 md:text-2xl text-neutral-100 flex justify-end gap-8 md:gap-8 mt-8 items-end">
+            <a class="underline decoration-2 underline-offset-2 md:text-2xl
+            text-neutral-100 flex justify-end gap-8 md:gap-8 mt-8 items-end"  target="_blank"  href="{{ asset('storage/pdf/curriculojpm.pdf') }}">
                 Currículo
-            </p>
+            </a>
         </div>
     </div>
 @endsection
